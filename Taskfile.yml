@@ -1,0 +1,41 @@
+version: "3"
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list
+
+  fmt:
+    desc: コードを整形する
+    cmds:
+      - golangci-lint fmt
+
+  lint:
+    desc: Windows 向けにリンターと整形の確認を実行する
+    env:
+      GOOS: windows
+      GOARCH: amd64
+    cmds:
+      - golangci-lint run
+
+  test:
+    desc: テストを実行する
+    cmds:
+      - go test ./...
+
+  build:
+    desc: Windows 向けにビルドできるか確認する
+    env:
+      GOOS: windows
+      GOARCH: amd64
+    cmds:
+      # -o を外すと、作業ディレクトリに loldatabase.exe が残る
+      - go build -o /dev/null ./...
+
+  check:
+    desc: CI と同じ確認をすべて実行する
+    cmds:
+      - task: lint
+      - task: test
+      - task: build
