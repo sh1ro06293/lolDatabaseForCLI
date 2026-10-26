@@ -1,0 +1,72 @@
+version: "2"
+
+linters:
+  default: all
+  disable:
+    # 日本語の文で行が長くなる
+    - lll
+    # 日本語で表示する方針と衝突する
+    - gosmopolitan
+    # コメントを「。」で終えない
+    - godot
+    - wsl
+    - exhaustruct
+    - gomodguard
+    # wsl_v5 と重複する
+    - nlreturn
+    # cyclop と重複する
+    - gocyclo
+    # 依存方向の規則と合わせて #3 で設定する
+    - depguard
+    - gomodguard_v2
+    - exhaustruct_v5
+
+  settings:
+    staticcheck:
+      # checks を書くと既定値が置き換わるので、既定で無効なものも並べる
+      checks:
+        - all
+        - -ST1000
+        - -ST1003
+        - -ST1016
+        - -ST1020
+        - -ST1021
+        - -ST1022
+        # 日本語のエラー文を誤検出する
+        - -ST1005
+
+    wrapcheck:
+      ignore-package-globs:
+        - github.com/sh1ro06293/lolDatabaseForCLI/*
+
+    revive:
+      enable-default-rules: true
+      rules:
+        - name: exported
+          disabled: true
+        - name: package-comments
+          disabled: true
+
+    varnamelen:
+      ignore-names:
+        - tt
+        - i
+        - id
+      ignore-decls:
+        - w http.ResponseWriter
+        - r *http.Request
+
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - goconst
+          - cyclop
+
+formatters:
+  enable:
+    - gofumpt
