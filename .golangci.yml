@@ -18,8 +18,6 @@ linters:
     - gocyclo
     # depguard の許可リストと重複する
     - gomodguard_v2
-    # 依存方向の規則と合わせて #3 で設定する
-    - exhaustruct_v5
 
   settings:
     # 依存は必要なものだけを許可する。新しいパッケージは下のどれかに加えないと、何も読み込めない
@@ -208,6 +206,15 @@ linters:
           # 空の許可リストは設定エラーになるため、存在しない名前を置いてすべての読み込みを禁止する
           allow:
             - 層に割り当てていないパッケージ
+
+    exhaustruct_v5:
+      explicit-mode: true
+      # 型の完全な名前との全体一致なので、末尾の .* を外すと何にも一致しない
+      enforce-patterns:
+        - github\.com/sh1ro06293/lolDatabaseForCLI/.*
+      # 表形式のテストの構造体は、使わない項目を省く
+      ignore-patterns:
+        - .*\.<anonymous>
 
     staticcheck:
       # checks を書くと既定値が置き換わるので、既定で無効なものも並べる
