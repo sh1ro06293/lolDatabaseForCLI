@@ -92,6 +92,34 @@ linters:
             - pkg: os
               desc: 判定の層は OS に触れない
 
+        projectlint:
+          files:
+            - "**/internal/projectlint/**"
+          list-mode: strict
+          allow:
+            - errors$
+            - fmt$
+            - strings$
+            - strconv$
+            - slices$
+            - maps$
+            - cmp$
+            - unicode$
+            - unicode/utf8$
+            - testing$
+            - go/ast$
+            - go/parser$
+            - go/token$
+            - io/fs$
+            - path$
+            - testing/fstest$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/projectlint$
+          deny:
+            - pkg: net
+              desc: 判定の層は通信しない
+            - pkg: os
+              desc: 判定の層は OS に触れない。ファイルは fs.FS で受け取る
+
         riot:
           files:
             - "**/internal/riot/**"
@@ -191,17 +219,27 @@ linters:
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/audit$
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/riot$
 
+        projectlint-command:
+          files:
+            - "**/cmd/projectlint/**"
+          list-mode: strict
+          allow:
+            - $gostd
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/projectlint$
+
         unclassified:
           files:
             - $all
             - "!**/internal/champion/**"
             - "!**/internal/update/**"
             - "!**/internal/audit/**"
+            - "!**/internal/projectlint/**"
             - "!**/internal/riot/**"
             - "!**/internal/github/**"
             - "!**/internal/cli/**"
             - "!**/cmd/loldatabase/**"
             - "!**/cmd/data-audit/**"
+            - "!**/cmd/projectlint/**"
           list-mode: strict
           # 空の許可リストは設定エラーになるため、存在しない名前を置いてすべての読み込みを禁止する
           allow:

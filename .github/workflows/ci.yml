@@ -17,6 +17,7 @@ jobs:
       matrix:
         task:
           - lint
+          - projectlint
           - test
           - build
     steps:
