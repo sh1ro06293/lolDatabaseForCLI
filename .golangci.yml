@@ -16,12 +16,244 @@ linters:
     - nlreturn
     # cyclop と重複する
     - gocyclo
-    # 依存方向の規則と合わせて #3 で設定する
-    - depguard
+    # depguard の許可リストと重複する
     - gomodguard_v2
-    - exhaustruct_v5
 
   settings:
+    # 依存は必要なものだけを許可する。新しいパッケージは下のどれかに加えないと、何も読み込めない
+    # 許可は前方一致なので、末尾に $ を付けて完全一致にする（path が path/filepath を、internal/champion が internal/championdata を許してしまう）
+    # テストは別のパッケージ（xxx_test）から自分自身を読み込むので、自分自身も許可する
+    depguard:
+      rules:
+        champion:
+          files:
+            - "**/internal/champion/**"
+          list-mode: strict
+          allow:
+            - errors$
+            - fmt$
+            - strings$
+            - strconv$
+            - slices$
+            - maps$
+            - cmp$
+            - unicode$
+            - unicode/utf8$
+            - testing$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/champion$
+          deny:
+            - pkg: net
+              desc: 判定の層は通信しない
+            - pkg: os
+              desc: 判定の層は OS に触れない
+
+        update:
+          files:
+            - "**/internal/update/**"
+          list-mode: strict
+          allow:
+            - errors$
+            - fmt$
+            - strings$
+            - strconv$
+            - slices$
+            - maps$
+            - cmp$
+            - unicode$
+            - unicode/utf8$
+            - testing$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/update$
+          deny:
+            - pkg: net
+              desc: 判定の層は通信しない
+            - pkg: os
+              desc: 判定の層は OS に触れない
+
+        audit:
+          files:
+            - "**/internal/audit/**"
+          list-mode: strict
+          allow:
+            - errors$
+            - fmt$
+            - strings$
+            - strconv$
+            - slices$
+            - maps$
+            - cmp$
+            - unicode$
+            - unicode/utf8$
+            - testing$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/audit$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/champion$
+          deny:
+            - pkg: net
+              desc: 判定の層は通信しない
+            - pkg: os
+              desc: 判定の層は OS に触れない
+
+        projectlint:
+          files:
+            - "**/internal/projectlint/**"
+          list-mode: strict
+          allow:
+            - errors$
+            - fmt$
+            - strings$
+            - strconv$
+            - slices$
+            - maps$
+            - cmp$
+            - unicode$
+            - unicode/utf8$
+            - testing$
+            - go/ast$
+            - go/parser$
+            - go/token$
+            - io/fs$
+            - path$
+            - testing/fstest$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/projectlint$
+          deny:
+            - pkg: net
+              desc: 判定の層は通信しない
+            - pkg: os
+              desc: 判定の層は OS に触れない。ファイルは fs.FS で受け取る
+
+        riot:
+          files:
+            - "**/internal/riot/**"
+          list-mode: strict
+          allow:
+            - errors$
+            - fmt$
+            - strings$
+            - strconv$
+            - slices$
+            - maps$
+            - cmp$
+            - unicode$
+            - unicode/utf8$
+            - testing$
+            - context$
+            - encoding/json$
+            - io$
+            - net/http$
+            - net/url$
+            - time$
+            - net/http/httptest$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/riot$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/champion$
+          deny:
+            - pkg: os
+              desc: 通信の層は OS に触れない
+
+        github:
+          files:
+            - "**/internal/github/**"
+          list-mode: strict
+          allow:
+            - errors$
+            - fmt$
+            - strings$
+            - strconv$
+            - slices$
+            - maps$
+            - cmp$
+            - unicode$
+            - unicode/utf8$
+            - testing$
+            - context$
+            - encoding/json$
+            - io$
+            - net/http$
+            - time$
+            - net/http/httptest$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/github$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/update$
+          deny:
+            - pkg: os
+              desc: 通信の層は OS に触れない
+
+        cli:
+          files:
+            - "**/internal/cli/**"
+          list-mode: strict
+          allow:
+            - errors$
+            - fmt$
+            - strings$
+            - strconv$
+            - slices$
+            - maps$
+            - cmp$
+            - unicode$
+            - unicode/utf8$
+            - testing$
+            - io$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/cli$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/champion$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/update$
+          deny:
+            - pkg: net
+              desc: 画面の層は通信しない
+            - pkg: os
+              desc: 画面の層は OS に触れない。標準出力や引数は cmd から受け取る
+
+        loldatabase:
+          files:
+            - "**/cmd/loldatabase/**"
+          list-mode: strict
+          allow:
+            - $gostd
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/cli$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/riot$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/github$
+
+        data-audit:
+          files:
+            - "**/cmd/data-audit/**"
+          list-mode: strict
+          allow:
+            - $gostd
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/audit$
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/riot$
+
+        projectlint-command:
+          files:
+            - "**/cmd/projectlint/**"
+          list-mode: strict
+          allow:
+            - $gostd
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/projectlint$
+
+        unclassified:
+          files:
+            - $all
+            - "!**/internal/champion/**"
+            - "!**/internal/update/**"
+            - "!**/internal/audit/**"
+            - "!**/internal/projectlint/**"
+            - "!**/internal/riot/**"
+            - "!**/internal/github/**"
+            - "!**/internal/cli/**"
+            - "!**/cmd/loldatabase/**"
+            - "!**/cmd/data-audit/**"
+            - "!**/cmd/projectlint/**"
+          list-mode: strict
+          # 空の許可リストは設定エラーになるため、存在しない名前を置いてすべての読み込みを禁止する
+          allow:
+            - 層に割り当てていないパッケージ
+
+    exhaustruct_v5:
+      explicit-mode: true
+      # 型の完全な名前との全体一致なので、末尾の .* を外すと何にも一致しない
+      enforce-patterns:
+        - github\.com/sh1ro06293/lolDatabaseForCLI/.*
+      # 表形式のテストの構造体は、使わない項目を省く
+      ignore-patterns:
+        - .*\.<anonymous>
+
     staticcheck:
       # checks を書くと既定値が置き換わるので、既定で無効なものも並べる
       checks:

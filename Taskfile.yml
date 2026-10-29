@@ -19,6 +19,12 @@ tasks:
     cmds:
       - golangci-lint run
 
+  projectlint:
+    desc: 型の置き場所や「。」など、このリポジトリ独自の規則を確認する
+    cmds:
+      # lint のように GOOS=windows をかけると、go run が Windows 用の実行ファイルを作って起動できない
+      - go run ./cmd/projectlint
+
   test:
     desc: テストを実行する
     cmds:
@@ -37,5 +43,6 @@ tasks:
     desc: CI と同じ確認をすべて実行する
     cmds:
       - task: lint
+      - task: projectlint
       - task: test
       - task: build
