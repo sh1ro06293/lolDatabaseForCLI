@@ -300,6 +300,11 @@ linters:
           - goconst
           - cyclop
 
+issues:
+  # 0 にしないと、同じ内容の指摘は 3 件、1 つのリンターの指摘は 50 件までしか表示されず、残りの件数を見誤る
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
 formatters:
   enable:
     - gofumpt
