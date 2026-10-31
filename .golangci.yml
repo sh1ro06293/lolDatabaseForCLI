@@ -62,6 +62,7 @@ linters:
             - unicode$
             - unicode/utf8$
             - testing$
+            - context$
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/update$
           deny:
             - pkg: net
@@ -84,6 +85,7 @@ linters:
             - unicode$
             - unicode/utf8$
             - testing$
+            - context$
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/audit$
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/champion$
           deny:
@@ -218,6 +220,7 @@ linters:
             - $gostd
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/audit$
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/riot$
+            - github.com/sh1ro06293/lolDatabaseForCLI/cmd/data-audit$
 
         projectlint-command:
           files:
@@ -299,6 +302,11 @@ linters:
         linters:
           - goconst
           - cyclop
+
+issues:
+  # 0 にしないと、同じ内容の指摘は 3 件、1 つのリンターの指摘は 50 件までしか表示されず、残りの件数を見誤る
+  max-issues-per-linter: 0
+  max-same-issues: 0
 
 formatters:
   enable:
