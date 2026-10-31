@@ -203,6 +203,36 @@ func TestCheckTestFiles(t *testing.T) {
 	})
 }
 
+func TestCheckPackageDirs(t *testing.T) {
+	t.Parallel()
+
+	runCases(t, []testCase{
+		{
+			name: "internal と cmd の下のディレクトリに置けば通る",
+			files: fstest.MapFS{
+				"internal/a/check.go":      file("package a\n"),
+				"internal/a/check_test.go": file("package a_test\n"),
+				"cmd/a/main.go":            file("package main\n"),
+				"cmd/a/main_test.go":       file("package main_test\n"),
+			},
+			want: nil,
+		},
+		{
+			name: "internal と cmd の直下に置くと、テストのファイルも含めて違反",
+			files: fstest.MapFS{
+				"internal/check.go":      file("package internal\n"),
+				"internal/check_test.go": file("package internal_test\n"),
+				"cmd/main.go":            file("package main\n"),
+			},
+			want: []projectlint.Finding{
+				{Path: "cmd/main.go", Line: 1, Column: 1, Message: "internal と cmd の直下には置かず、その下に名前を付けたディレクトリを作って置く"},
+				{Path: "internal/check.go", Line: 1, Column: 1, Message: "internal と cmd の直下には置かず、その下に名前を付けたディレクトリを作って置く"},
+				{Path: "internal/check_test.go", Line: 1, Column: 1, Message: "internal と cmd の直下には置かず、その下に名前を付けたディレクトリを作って置く"},
+			},
+		},
+	})
+}
+
 func TestCheckIgnoresLineDirectives(t *testing.T) {
 	t.Parallel()
 

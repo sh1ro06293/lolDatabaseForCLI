@@ -21,6 +21,7 @@ const (
 	messageComment      = "コメントを「。」で終えない"
 	messageErrorString  = "エラー文を「。」で終えない"
 	messageTestRequired = "internal と cmd のパッケージには _test.go を置く"
+	messagePackageDir   = "internal と cmd の直下には置かず、その下に名前を付けたディレクトリを作って置く"
 
 	sentenceEnd = "。"
 )
@@ -43,6 +44,7 @@ func Check(fsys fs.FS) ([]Finding, error) {
 	}
 
 	findings = append(findings, checkTestFiles(names)...)
+	findings = append(findings, checkPackageDirs(names)...)
 
 	slices.SortFunc(findings, compareFindings)
 
@@ -77,6 +79,24 @@ func goFiles(fsys fs.FS) ([]string, error) {
 	}
 
 	return names, nil
+}
+
+func checkPackageDirs(names []string) []Finding {
+	var findings []Finding
+
+	for _, name := range names {
+		dir := path.Dir(name)
+		if dir == "internal" || dir == "cmd" {
+			findings = append(findings, Finding{
+				Path:    name,
+				Line:    1,
+				Column:  1,
+				Message: messagePackageDir,
+			})
+		}
+	}
+
+	return findings
 }
 
 func checkTestFiles(names []string) []Finding {
