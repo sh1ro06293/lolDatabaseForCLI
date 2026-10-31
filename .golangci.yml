@@ -219,6 +219,7 @@ linters:
             - $gostd
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/audit$
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/riot$
+            - github.com/sh1ro06293/lolDatabaseForCLI/cmd/data-audit$
 
         projectlint-command:
           files:
