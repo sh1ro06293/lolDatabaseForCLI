@@ -84,6 +84,7 @@ linters:
             - unicode$
             - unicode/utf8$
             - testing$
+            - context$
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/audit$
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/champion$
           deny:
