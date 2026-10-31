@@ -231,6 +231,15 @@ linters:
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/projectlint$
             - github.com/sh1ro06293/lolDatabaseForCLI/cmd/projectlint$
 
+        policycheck:
+          files:
+            - "**/cmd/policycheck/**"
+          list-mode: strict
+          allow:
+            - $gostd
+            - github.com/sh1ro06293/lolDatabaseForCLI/internal/update$
+            - github.com/sh1ro06293/lolDatabaseForCLI/cmd/policycheck$
+
         unclassified:
           files:
             - $all
@@ -244,6 +253,7 @@ linters:
             - "!**/cmd/loldatabase/**"
             - "!**/cmd/data-audit/**"
             - "!**/cmd/projectlint/**"
+            - "!**/cmd/policycheck/**"
           list-mode: strict
           # 空の許可リストは設定エラーになるため、存在しない名前を置いてすべての読み込みを禁止する
           allow:
