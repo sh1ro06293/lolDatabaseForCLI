@@ -25,6 +25,19 @@ tasks:
       # lint のように GOOS=windows をかけると、go run が Windows 用の実行ファイルを作って起動できない
       - go run ./cmd/projectlint
 
+  policycheck:
+    desc: update-policy.json の最低利用可能バージョンが BASE (既定 origin/main) より下がっていないか確認する
+    vars:
+      BASE: '{{.BASE | default "origin/main"}}'
+    env:
+      BASE: '{{.BASE}}'
+    cmds:
+      - |
+        base_file=$(mktemp)
+        trap 'rm -f "$base_file"' EXIT
+        git show "$BASE:update-policy.json" > "$base_file" || exit 1
+        go run ./cmd/policycheck "$base_file" update-policy.json
+
   test:
     desc: 静的検査とテストを実行する
     cmds:
