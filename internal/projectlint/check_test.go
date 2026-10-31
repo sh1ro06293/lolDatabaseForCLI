@@ -172,14 +172,31 @@ func TestCheckTestFiles(t *testing.T) {
 				"internal/a/b/check.go": file("package b\n"),
 			},
 			want: []projectlint.Finding{
-				{Path: "internal/a/b/check.go", Line: 1, Column: 1, Message: "internal のパッケージには _test.go を置く"},
-				{Path: "internal/a/check.go", Line: 1, Column: 1, Message: "internal のパッケージには _test.go を置く"},
+				{Path: "internal/a/b/check.go", Line: 1, Column: 1, Message: "internal と cmd のパッケージには _test.go を置く"},
+				{Path: "internal/a/check.go", Line: 1, Column: 1, Message: "internal と cmd のパッケージには _test.go を置く"},
 			},
 		},
 		{
-			name: "internal の外は対象外",
+			name: "cmd のパッケージにテストがあれば通る",
+			files: fstest.MapFS{
+				"cmd/a/main.go":      file("package main\n"),
+				"cmd/a/main_test.go": file("package main_test\n"),
+			},
+			want: nil,
+		},
+		{
+			name: "cmd のパッケージにテストが無いと違反",
 			files: fstest.MapFS{
 				"cmd/a/main.go": file("package main\n"),
+			},
+			want: []projectlint.Finding{
+				{Path: "cmd/a/main.go", Line: 1, Column: 1, Message: "internal と cmd のパッケージには _test.go を置く"},
+			},
+		},
+		{
+			name: "internal と cmd の外は対象外",
+			files: fstest.MapFS{
+				"tools/a/main.go": file("package main\n"),
 			},
 			want: nil,
 		},

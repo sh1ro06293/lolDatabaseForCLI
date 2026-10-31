@@ -31,7 +31,7 @@ func TestRunExitCodes(t *testing.T) {
 			name:       "違反があれば指摘と件数を出して 1",
 			files:      fstest.MapFS{"internal/a/check.go": {Data: []byte("package a\n")}},
 			wantCode:   1,
-			wantStdout: "internal/a/check.go:1:1: internal のパッケージには _test.go を置く (projectlint)\n1 件\n",
+			wantStdout: "internal/a/check.go:1:1: internal と cmd のパッケージには _test.go を置く (projectlint)\n1 件\n",
 		},
 	}
 	for _, tt := range tests {
