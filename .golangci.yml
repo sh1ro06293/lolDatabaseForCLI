@@ -226,6 +226,7 @@ linters:
           allow:
             - $gostd
             - github.com/sh1ro06293/lolDatabaseForCLI/internal/projectlint$
+            - github.com/sh1ro06293/lolDatabaseForCLI/cmd/projectlint$
 
         unclassified:
           files:

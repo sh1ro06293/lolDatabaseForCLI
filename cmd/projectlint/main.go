@@ -16,10 +16,10 @@ const (
 )
 
 func main() {
-	os.Exit(run(os.DirFS("."), os.Stdout, os.Stderr))
+	os.Exit(Run(os.DirFS("."), os.Stdout, os.Stderr))
 }
 
-func run(fsys fs.FS, stdout, stderr io.Writer) int {
+func Run(fsys fs.FS, stdout, stderr io.Writer) int {
 	findings, err := projectlint.Check(fsys)
 	if err != nil {
 		_, _ = fmt.Fprintln(stderr, err)
