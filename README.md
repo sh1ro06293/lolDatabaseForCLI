@@ -2,6 +2,14 @@
 
 League of Legends のチャンピオン情報を日本語で表示する Windows 向けの CLI です。開発中のため、まだ配布していません。
 
+## 免責
+
+- loldatabase は個人が作った非公式のツールです。使って起きた結果（アカウントの停止、データの消失など）について、作者は責任を負いません。詳しくは [LICENSE](LICENSE) を参照してください。
+- このツールはゲームのクライアントに触れず、ゲームのファイルも書き換えません。インターネットで公開されているデータを読んで表示するだけです。
+- LICENSE が対象にするのは、このリポジトリのコードと文書です。取得して表示するチャンピオンの名前、スキルの説明や数値などのゲームのデータは対象外で、Riot Games のものです。
+
+loldatabase isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+
 ## 開発
 
 ### 確認
