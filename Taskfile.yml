@@ -26,8 +26,9 @@ tasks:
       - go run ./cmd/projectlint
 
   test:
-    desc: テストを実行する
+    desc: 静的検査とテストを実行する
     cmds:
+      - go vet ./...
       - go test ./...
 
   build:
