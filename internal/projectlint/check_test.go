@@ -172,16 +172,63 @@ func TestCheckTestFiles(t *testing.T) {
 				"internal/a/b/check.go": file("package b\n"),
 			},
 			want: []projectlint.Finding{
-				{Path: "internal/a/b/check.go", Line: 1, Column: 1, Message: "internal のパッケージには _test.go を置く"},
-				{Path: "internal/a/check.go", Line: 1, Column: 1, Message: "internal のパッケージには _test.go を置く"},
+				{Path: "internal/a/b/check.go", Line: 1, Column: 1, Message: "internal と cmd のパッケージには _test.go を置く"},
+				{Path: "internal/a/check.go", Line: 1, Column: 1, Message: "internal と cmd のパッケージには _test.go を置く"},
 			},
 		},
 		{
-			name: "internal の外は対象外",
+			name: "cmd のパッケージにテストがあれば通る",
+			files: fstest.MapFS{
+				"cmd/a/main.go":      file("package main\n"),
+				"cmd/a/main_test.go": file("package main_test\n"),
+			},
+			want: nil,
+		},
+		{
+			name: "cmd のパッケージにテストが無いと違反",
 			files: fstest.MapFS{
 				"cmd/a/main.go": file("package main\n"),
 			},
+			want: []projectlint.Finding{
+				{Path: "cmd/a/main.go", Line: 1, Column: 1, Message: "internal と cmd のパッケージには _test.go を置く"},
+			},
+		},
+		{
+			name: "internal と cmd の外は対象外",
+			files: fstest.MapFS{
+				"tools/a/main.go": file("package main\n"),
+			},
 			want: nil,
+		},
+	})
+}
+
+func TestCheckPackageDirs(t *testing.T) {
+	t.Parallel()
+
+	runCases(t, []testCase{
+		{
+			name: "internal と cmd の下のディレクトリに置けば通る",
+			files: fstest.MapFS{
+				"internal/a/check.go":      file("package a\n"),
+				"internal/a/check_test.go": file("package a_test\n"),
+				"cmd/a/main.go":            file("package main\n"),
+				"cmd/a/main_test.go":       file("package main_test\n"),
+			},
+			want: nil,
+		},
+		{
+			name: "internal と cmd の直下に置くと、テストのファイルも含めて違反",
+			files: fstest.MapFS{
+				"internal/check.go":      file("package internal\n"),
+				"internal/check_test.go": file("package internal_test\n"),
+				"cmd/main.go":            file("package main\n"),
+			},
+			want: []projectlint.Finding{
+				{Path: "cmd/main.go", Line: 1, Column: 1, Message: "internal と cmd の直下には置かず、その下に名前を付けたディレクトリを作って置く"},
+				{Path: "internal/check.go", Line: 1, Column: 1, Message: "internal と cmd の直下には置かず、その下に名前を付けたディレクトリを作って置く"},
+				{Path: "internal/check_test.go", Line: 1, Column: 1, Message: "internal と cmd の直下には置かず、その下に名前を付けたディレクトリを作って置く"},
+			},
 		},
 	})
 }
